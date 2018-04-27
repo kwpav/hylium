@@ -4,7 +4,7 @@
         [selenium.webdriver.support.ui [WebDriverWait]]
         [selenium.webdriver.support [expected_conditions :as EC]])
 
-;; Locators 
+;; Locators
 ;; id and name are reserved words...
 ;; (setv by-id By.ID)
 (setv link-text By.LINK_TEXT)
@@ -14,7 +14,15 @@
 (setv css By.CSS_SELECTOR)
 (setv xpath By.XPATH)
 
-;; 
+;;
+;; HELPERS
+;;
+
+(defn is-type? [obj expected-type]
+  "Determine if an object is an expected type"
+  (is (type obj) expected-type))
+
+;;
 ;; BROWSER ACTIONS
 ;;
 
@@ -23,7 +31,7 @@
   "Navigate to a URL"
   (.get driver url))
 
-;; 
+;;
 ;; FINDS
 ;;
 
@@ -32,7 +40,7 @@
   "Find an element on the page"
   (wait-for-element by locator))
 
-;; 
+;;
 ;; WAITS
 ;;
 
@@ -41,19 +49,23 @@
   (-> (WebDriverWait driver 20)
       (.until (EC.presence_of_element_located (tuple [by locator])))))
 
-;; 
+;;
 ;; ELEMENT ACTIONS
-;; 
+;;
 
 ;; String String -> Action
 (defn write [locator keys]
   "Write text or send keys to an element"
-  (-> (find-element css locator) (.send_keys keys)))
+  (if (is-type? locator str)
+      (-> (find-element css locator) (.send_keys keys))
+      (-> locator (.send_keys keys))))
 
 ;; String -> Action
 (defn click [locator]
   "Click an element"
-  (-> (find-element css locator) (.click)))
+  (if (is-type? locator str)
+      (-> (find-element css locator) (.click))
+      (-> locator (.click))))
 
 ;; String -> Action
 (defn uncheck [locator]
