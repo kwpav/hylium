@@ -4,22 +4,31 @@
         [selenium.webdriver.support.ui [WebDriverWait]]
         [selenium.webdriver.support [expected_conditions :as EC]])
 
-;; Locators
-;; id and name are reserved words...
-;; (setv by-id By.ID)
-(setv link-text By.LINK_TEXT)
-(setv partial-link-text By.PARTIAL_LINK_TEXT)
-;; (setv by-name By.NAME)
-(setv tag By.TAG_NAME)
-(setv css By.CSS_SELECTOR)
-(setv xpath By.XPATH)
+;; 
+;; CONFIG
+;;
+
+(setv default-selector-type css)
+(setv default-wait-time 60)
+
+;; 
+;; LOCATORS
+;;
+
+(setv by-id By.ID)
+(setv by-link-text By.LINK_TEXT)
+(setv by-partial-link-text By.PARTIAL_LINK_TEXT)
+(setv by-name By.NAME)
+(setv by-tag By.TAG_NAME)
+(setv by-css By.CSS_SELECTOR)
+(setv by-xpath By.XPATH)
 
 ;;
 ;; HELPERS
 ;;
 
 (defn is-type? [obj expected-type]
-  "Determine if an object is an expected type"
+  "Determine if an object is an expected type."
   (is (type obj) expected-type))
 
 ;;
@@ -28,53 +37,81 @@
 
 ;; String -> Action
 (defn navigate [url]
-  "Navigate to a URL"
+  "Navigate to a URL."
   (.get driver url))
-
-;;
-;; FINDS
-;;
-
-;; Selenium.By String -> IWebElement
-(defn find-element [by locator]
-  "Find an element on the page"
-  (wait-for-element by locator))
 
 ;;
 ;; WAITS
 ;;
 
-;; Selenium.By String -> IWebElement
+;; Selenium.By String -> WebElement
 (defn wait-for-element [by locator]
-  (-> (WebDriverWait driver 20)
-      (.until (EC.presence_of_element_located (tuple [by locator])))))
+  (-> (WebDriverWait driver default-wait-time)
+      (.until (EC.presence_of_element_located (make-element by locator)))))
+
+;;
+;; ELEMENTS
+;;
+
+;; Selenium.By String -> Tuple
+(defn make-element [by locator]
+  "Define an element using a locator and its type (e.g. css, id, etc.)"
+  (tuple [by locator]))
+
+;; Element -> Selenium.By
+(defn get-locator-type [element]
+  "Get an elements locator type (e.g. css, id, etc.)"
+  (first element))
+
+;; Element -> String
+(defn get-locator [element]
+  "Get an elements locator"
+  (last element))
+
+;; (String or Element or WebElement) -> WebElement
+(defn handle-element [element]
+  "Find and return an element using the default selector, our element implementation,
+  or return itself if it is already an element."
+  (cond [(is-type? element str)
+         (find-element default-selector-type element)]
+        [(is-type? element tuple)
+         (find-element (get-locator-type element)
+                       (get-locator element))]
+        [True element]))
+
+;; Selenium.By String -> WebElement
+(defn find-element [by locator]
+  "Find an element on the page"
+  (wait-for-element by locator))
 
 ;;
 ;; ELEMENT ACTIONS
 ;;
 
-;; String String -> Action
-(defn write [locator keys]
-  "Write text or send keys to an element"
-  (if (is-type? locator str)
-      (-> (find-element css locator) (.send_keys keys))
-      (-> locator (.send_keys keys))))
+;; (String or Element or WebElement) String -> Action
+(defn write [element keys]
+  "Write text or send keys to an element."
+  (-> (handle-element element) (.send_keys keys)))
 
-;; String -> Action
-(defn click [locator]
+;; (String or Element or WebElement) -> Action
+(defn click [element]
   "Click an element"
-  (if (is-type? locator str)
-      (-> (find-element css locator) (.click))
-      (-> locator (.click))))
+  (.click (handle-element element)))
 
-;; String -> Action
-(defn uncheck [locator]
-  "Uncheck a checkbox if it is unchecked"
-  (if (.is_selected (find-element css locator))
-      (click locator)))
+;; (String or Element or WebElement) -> Action
+(defn uncheck [element]
+  "Uncheck a checkbox if it is checked."
+  (if (.is_selected (handle-element element))
+      (click element)))
 
-;; String -> Action
-(defn check [locator]
-  "Check a checkbox if it is checked"
-  (if (not (.is_selected (find-element css locator)))
-      (click locator)))
+;; (String or Element or WebElement) -> Action
+(defn check [element]
+  "Check a checkbox if it is unchecked."
+  (if (not (.is_selected (handle-element element)))
+      (click element)))
+
+;; (String or Element or WebElement) -> String
+(defn text [element]
+  "Read the text of an element."
+  (setv el (handle-element element))
+  el.text)
