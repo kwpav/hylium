@@ -1,0 +1,7 @@
+appdirs==1.4.3
+args==0.1.0
+astor==0.6.2
+clint==0.5.1
+hy==0.14.0
+rply==0.7.5
+selenium==3.11.0
