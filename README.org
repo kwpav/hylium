@@ -1,2 +1,2 @@
 * Hylium
-Lighten up your UI automation with the power of [[http://docs.hylang.org/en/stable/][Hy]] and Selenium.
+Lighten up your UI automation. Get [[http://docs.hylang.org/en/stable/][Hy]] on Selenium.
