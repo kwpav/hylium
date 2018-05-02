@@ -8,7 +8,7 @@
 ;; CONFIG
 ;;
 
-(setv default-selector-type css)
+(setv default-selector-type by-css)
 (setv default-wait-time 60)
 
 ;; 
