@@ -27,7 +27,7 @@
 ;; HELPERS
 ;;
 
-(defn is-type? [obj expected-type]
+(defn type? [obj expected-type]
   "Determine if an object is an expected type."
   (is (type obj) expected-type))
 
@@ -56,7 +56,7 @@
 ;; Selenium.By String -> Tuple
 (defn make-element [by locator]
   "Define an element using a locator and its type (e.g. css, id, etc.)"
-  (tuple [by locator]))
+  (, by locator))
 
 ;; Element -> Selenium.By
 (defn get-locator-type [element]
@@ -72,9 +72,9 @@
 (defn handle-element [element]
   "Find and return an element using the default selector, our element implementation,
   or return itself if it is already an element."
-  (cond [(is-type? element str)
+  (cond [(type? element str)
          (find-element default-selector-type element)]
-        [(is-type? element tuple)
+        [(type? element tuple)
          (find-element (get-locator-type element)
                        (get-locator element))]
         [True element]))
@@ -83,6 +83,7 @@
 (defn find-element [by locator]
   "Find an element on the page"
   (wait-for-element by locator))
+
 
 ;;
 ;; ELEMENT ACTIONS
@@ -107,11 +108,19 @@
 ;; (String or Element or WebElement) -> Action
 (defn check [element]
   "Check a checkbox if it is unchecked."
-  (if (not (.is_selected (handle-element element)))
-      (click element)))
+  (if-not (.is_selected (handle-element element))
+          (click element)))
 
 ;; (String or Element or WebElement) -> String
 (defn text [element]
   "Read the text of an element."
   (setv el (handle-element element))
   el.text)
+
+
+;;
+;; PAGE
+;;
+
+(defmacro defelement [name by selector]
+  `(setv ~name (make-element ~by ~selector)))
