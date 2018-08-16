@@ -6,6 +6,11 @@ Hylium is a Python / Hy library that makes writing UI tests easier.
 This is in an *alpha* state right now and should probably not be used yet.
 
 ** Getting Started
+Hylium assumes you have the following installed:
+- Python 3.7
+- Pipenv
+- geckodriver (the Selenium Firefox driver)
+
 *** Virtual Environment
 In order to work on this, we need to set up a virtual environment. This project uses [[https://docs.pipenv.org][pipenv]] to manage packages and virtual environments.
 
@@ -70,3 +75,6 @@ Use the =defelement= macro to create elements on a page:
   (.search ddg-home "Hello World")
   (.quit driver)
 #+END_SRC
+
+** License
+[[file:LICENSE.txt][MIT]]
