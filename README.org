@@ -1,2 +1,25 @@
 * Hylium
 Lighten up your UI automation. Get [[http://docs.hylang.org/en/stable/][Hy]] on Selenium.
+
+A work in progress.
+
+** Getting Started
+*** Virtual Environment
+In order to work on this, we need to set up a virtual environment. This project uses [[https://docs.pipenv.org][pipenv]] to manage packages and virtual environments.
+
+After cloning and navigating to the directory, install the packages, and then setup/use the virtual environment: 
+#+BEGIN_SRC sh
+  pipenv install
+  pipenv shell
+#+END_SRC
+
+*** Install as a library
+To use this as a library, we can install it using =pip=.
+
+After cloning and navigating to the directory, install `hylium` as a package:
+#+BEGIN_SRC sh
+  pip install --user .
+#+END_SRC
+
+
+
