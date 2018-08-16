@@ -1,7 +1,9 @@
 * Hylium
 Lighten up your UI automation. Get [[http://docs.hylang.org/en/stable/][Hy]] on Selenium.
 
-A work in progress.
+Hylium is a Python / Hy library that makes writing UI tests easier.
+
+This is in an *alpha* state right now and should probably not be used yet.
 
 ** Getting Started
 *** Virtual Environment
@@ -19,4 +21,52 @@ To use this as a library, we can install it using =pip=.
 After cloning and navigating to the directory, install =hylium= as a package:
 #+BEGIN_SRC sh
   pip install --user .
+#+END_SRC
+
+** Examples
+The following are examples of setting up the browser, navigating to duckduckgo.com, searching for "Hello World", and then closing the browser:
+*** Using the default selector
+Hylium uses the CSS selector by default:
+#+BEGIN_SRC hy
+  (setv driver (start))
+  (navigate "https://www.duckduckgo.com")
+  (write "#search_form_input_homepage" "Hello World")
+  (click "#search_button_homepage")
+  (.quit driver)
+#+END_SRC
+
+*** Using a specified selector
+Use =make-element= to create an element with your chosen selector.
+
+To use the ID selector:
+#+BEGIN_SRC hy
+  (setv driver (start))
+  (navigate "https://www.duckduckgo.com")
+  (write (make-element by-id "search_form_input_homepage") "Hello World")
+  (click (make-element by-id "search_button_homepage"))
+  (.quit driver)
+#+END_SRC
+
+*** Using page objects
+Hylium can help in the creation of page objects.
+
+Use the =defelement= macro to create elements on a page:
+#+BEGIN_SRC hy
+  (defclass DdgHomePage [object]
+    "The DuckDuckGo home page"
+    (defelement search-input by-id "search_form_input_homepage")
+    (defelement search-button by-id "search_button_homepage")
+
+    (defn goto [self]
+      (navigate "https://www.duckduckgo.com"))
+
+    (defn search [self search-term]
+      (write self.search-input search-term)
+      (click self.search-button)))
+
+  (setv driver (start))
+  (setv ddg-home (DdgHomePage))
+  (.goto ddg-home)
+  (.search ddg-home "Hello World")
+  (.quit driver)
 #+END_SRC
