@@ -1,7 +1,7 @@
 * Hylium
 Lighten up your UI automation. Get [[http://docs.hylang.org/en/stable/][Hy]] on Selenium.
 
-Hylium is a Python / Hy library that makes writing UI tests easier.
+*Hylium* is a Hy / Python library that uses Selenium and the power of LISP to make UI tests easier to write.
 
 This is in an *alpha* state right now and should probably not be used yet.
 
@@ -11,6 +11,22 @@ Hylium assumes you have the following installed:
 - Pipenv
 - geckodriver (the Selenium Firefox driver)
 
+You can set it up in two ways:
+- as a library
+- using a virtual environment
+
+*** Install as a library
+To use this as a library, we can install it using =pip=.
+
+After cloning and navigating to the directory, install =hylium= as a package:
+#+BEGIN_SRC sh
+  pip install .
+#+END_SRC
+
+This assumes that you are in a virtual environment for the project where you want to use Hylium.
+
+You can now =(import hylium)= as you would any other libary.
+
 *** Virtual Environment
 In order to work on this, we need to set up a virtual environment. This project uses [[https://docs.pipenv.org][pipenv]] to manage packages and virtual environments.
 
@@ -18,14 +34,6 @@ After cloning and navigating to the directory, install the packages and setup/us
 #+BEGIN_SRC sh
   pipenv install
   pipenv shell
-#+END_SRC
-
-*** Install as a library
-To use this as a library, we can install it using =pip=.
-
-After cloning and navigating to the directory, install =hylium= as a package:
-#+BEGIN_SRC sh
-  pip install --user .
 #+END_SRC
 
 ** Examples
